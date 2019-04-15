@@ -217,6 +217,7 @@ Access_Model_Data::save_view_clouds (	std::string model_name,
 		ss << "view" << i << ".pcd";
 		boost::filesystem::path p_view = p_views;
 		p_view /= ss.str ();
+
 		pcl::io::savePCDFileBinaryCompressed (p_view.string(), *views_N[i]);
 	}
 

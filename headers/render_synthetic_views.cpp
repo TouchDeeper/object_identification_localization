@@ -380,8 +380,8 @@ Render_Synthetic_Views::estimate_normals (	PointCloudT::Ptr cloud_xyz,
 	normal_estimator.setInputCloud (cloud_xyz);
 	normal_estimator.compute (*normals);
 
-	// Concatenate cloud_xyz and normals into cloud_N
-	pcl::concatenateFields(*cloud_xyz, *normals, *cloud_N); 
+    // Concatenate cloud_xyz and normals into cloud_N
+	pcl::concatenateFields(*cloud_xyz, *normals, *cloud_N);
 }
 
 /**
@@ -585,7 +585,7 @@ Render_Synthetic_Views::process_clouds (std::vector<PointCloudT::Ptr> views_xyz,
 		
 		// Estimate normals and store the result in PointNormal clouds
 		PointCloud_N::Ptr processed_cloud_N (new PointCloud_N);
-		estimate_normals (processed_cloud, processed_cloud_N, 0.0, 0.0, -radius_tessellated_sphere_);
+		estimate_normals (processed_cloud, processed_cloud_N, 0.0, 0.0, -radius_tessellated_sphere_);//in the camera coordinate system
 		
 		if (processed_cloud->points.size() == 0)
 		{
@@ -611,14 +611,18 @@ Render_Synthetic_Views::process_clouds_original_pose (	std::vector<PointCloudT::
 	for (int i = 0; i < views_xyz.size(); i++)
 	{
 		// Rotate cloud back to original pose
-		Eigen::Matrix3d rotation_matrix = poses[i].block<3,3> (0,0).inverse ();
-		Eigen::Vector3d translation_vector = cam_pos[i];
-		Eigen::Matrix4d transformation;
-		transformation.block<3,3> (0,0) = rotation_matrix;
-		transformation (0,3) = radius_tessellated_sphere_*translation_vector (0);
-		transformation (1,3) = radius_tessellated_sphere_*translation_vector (1);
-		transformation (2,3) = radius_tessellated_sphere_*translation_vector (2);
-		transformation (3,3) = 1.0;
+//		Eigen::Matrix3d rotation_matrix = poses[i].block<3,3> (0,0).inverse ();
+//		Eigen::Vector3d translation_vector = cam_pos[i];
+//		Eigen::Matrix4d transformation;
+//		transformation.block<3,3> (0,0) = rotation_matrix;
+//		transformation (0,3) = radius_tessellated_sphere_*translation_vector (0);
+//		transformation (1,3) = radius_tessellated_sphere_*translation_vector (1);
+//		transformation (2,3) = radius_tessellated_sphere_*translation_vector (2);
+//		transformation (3,3) = 1.0;
+
+		//modified by myself
+		Eigen::Matrix4d transformation = poses[i].inverse();
+
 		
 		PointCloudT::Ptr processed_cloud (new PointCloudT);
 		pcl::transformPointCloud (*views_xyz[i], *processed_cloud, transformation);
@@ -824,6 +828,9 @@ Render_Synthetic_Views::normals_viewer (std::vector<PointCloud_N::Ptr> views_N, 
 		viewer.addPointCloudNormals<Point_N> (views_N[i], 1, normal_magnitude_, "view_normals", vp_2);
 		viewer.removePointCloud ("view_original_pose_normals");
 		viewer.addPointCloudNormals<Point_N> (views_original_pose_N[i], 1, normal_magnitude_, "view_original_pose_normals", vp_4);
+		viewer.removePointCloud ("view_original_pose_xyz_vp4");
+		pcl::visualization::PointCloudColorHandlerCustom<Point_N> single_color(views_original_pose_N[i], 0, 255, 0);
+		viewer.addPointCloud<Point_N> (views_original_pose_N[i],single_color,"view_original_pose_xyz_vp4", vp_4);
 		if (i == 0)
 		{
 			std::cout << "Press Q to view next rendered point cloud..." << std::endl;
@@ -858,7 +865,7 @@ Render_Synthetic_Views::merge_views (	std::vector<PointCloudT::Ptr> views_xyz,
 		transformation (2,3) = radius_tessellated_sphere_*translation_vector (2);
 		transformation (3,3) = 1.0;
 		//*/
-		
+
 		//Eigen::Matrix4d transformation = poses[i].inverse ();
 		
 		PointCloudT::Ptr rotated_model (new PointCloudT ());
