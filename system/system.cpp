@@ -251,10 +251,10 @@ main(int argc, char** argv) {
 			}
 
 			std::cout << "\nFor cluster " << c << '\n';
-			std::vector<Point_Cloud_N::Ptr> merged_views;
-			std::vector<std::string> model_names;
-			std::vector<std::vector<int> > model_view_indices;
-			std::vector<Point_Cloud_N::Ptr> full_models;
+			std::vector<Point_Cloud_N::Ptr> merged_views;//object for storing the merged_views for cluster c
+			std::vector<std::string> model_names;//object for storing the name of identified model for cluster c
+			std::vector<std::vector<int> > model_view_indices;//object for storing the view indices in the each identified model
+			std::vector<Point_Cloud_N::Ptr> full_models;//object for storing the full model corresponding to the model name
 
 			// Loop through all ID model names
 			int n_total_merged_views = 0; // Keeps track of total number of views that have been merged

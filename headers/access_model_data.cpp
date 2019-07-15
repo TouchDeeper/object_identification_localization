@@ -218,7 +218,7 @@ Access_Model_Data::save_view_clouds (	std::string model_name,
 		boost::filesystem::path p_view = p_views;
 		p_view /= ss.str ();
 
-		pcl::io::savePCDFileBinaryCompressed (p_view.string(), *views_N[i]);
+		pcl::io::savePCDFileASCII (p_view.string(), *views_N[i]);
 	}
 
 	// 
@@ -248,7 +248,7 @@ Access_Model_Data::save_view_clouds (	std::string model_name,
 		ss << "view" << i << ".pcd";
 		boost::filesystem::path p_view = p_views_original_pose;
 		p_view /= ss.str ();
-		pcl::io::savePCDFileBinaryCompressed (p_view.string(), *views_original_pose[i]);
+		pcl::io::savePCDFileASCII (p_view.string(), *views_original_pose[i]);
 	}
 }
 

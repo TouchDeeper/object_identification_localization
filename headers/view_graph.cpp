@@ -253,7 +253,14 @@ View_Graph::add_graph_to_viewer (	pcl::visualization::PCLVisualizer &visu,
 		std::stringstream ss;
 		ss << "Sphere" << i;
 		visu.addSphere (graph[i].viewpoint_, radius, ss.str (), viewport);
-		
+		visu.updateSphere(graph[i].viewpoint_,radius,graph[i].rgb[0],graph[i].rgb[1],graph[i].rgb[2],ss.str ());
+
+		std::stringstream ssNumber;
+		ssNumber << "number "<< i;
+		pcl::PointXYZ numberOffset(0.02,0.02,0);
+		pcl::PointXYZ numberCenter(numberOffset.x + graph[i].viewpoint_.x,numberOffset.y + graph[i].viewpoint_.y,numberOffset.z + graph[i].viewpoint_.z);
+		visu.addText3D(std::to_string(i),numberCenter,radius,0,255,255,ssNumber.str (),viewport);
+
 		if (show_rotations)
 		{
 			Eigen::Affine3f a;
@@ -344,7 +351,10 @@ View_Graph::add_node (PointT viewpoint, Eigen::Matrix3d rotation, std::vector<in
 	n.rotation_ = rotation;
 	n.neighbors_ = neighbors;
 	n.view_index = graph.size();
-	
+	n.rgb[0] = 0;
+	n.rgb[1] = 255;
+	n.rgb[2] = 0;
+
 	graph.push_back (n);
 }
 

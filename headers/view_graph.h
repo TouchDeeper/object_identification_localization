@@ -27,7 +27,7 @@ class View_Graph
 			int view_index;
 			float cost;
 			int previous;
-			
+			int rgb[3];
 			bool operator < (const node &n) const
 			{
 				return (cost < n.cost);

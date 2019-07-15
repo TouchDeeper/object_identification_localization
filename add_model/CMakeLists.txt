@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 project(offline_data_generation)
-
+set(CMAKE_CXX_STANDARD 11)
 find_package(PCL 1.8 REQUIRED)
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 #set(CMAKE_BUILD_TYPE Debug)

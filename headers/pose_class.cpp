@@ -535,7 +535,7 @@ Pose_Class::estimate_pose_multiple_views(	std::vector<std::vector<Point_Cloud_N:
 
 /**
 	Estimates the pose for all merged views in the cluster and writes the pose data
-	@param views The merged views to estimate the pose for
+	@param views The merged views of candidate model to estimate the pose for
 	@param model_names The model name for each merged view
 	@param model_view_indices The view indices used to merge each view
 	@param cluster The cluster to estimate the pose in

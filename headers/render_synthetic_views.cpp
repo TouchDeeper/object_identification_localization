@@ -585,8 +585,10 @@ Render_Synthetic_Views::process_clouds (std::vector<PointCloudT::Ptr> views_xyz,
 		
 		// Estimate normals and store the result in PointNormal clouds
 		PointCloud_N::Ptr processed_cloud_N (new PointCloud_N);
-		estimate_normals (processed_cloud, processed_cloud_N, 0.0, 0.0, -radius_tessellated_sphere_);//in the camera coordinate system
-		
+		//because the cloud has been translate(0,0.-object_center of processed_cloud) to the origin in the camera coordinate system,
+		// so viewpoint need to translate from (0,0,0) to (0,0,-radius_tessellated_sphere_)
+		estimate_normals (processed_cloud, processed_cloud_N, 0.0, 0.0, -radius_tessellated_sphere_);
+
 		if (processed_cloud->points.size() == 0)
 		{
 			pcl::console::print_error ("Processed point cloud is empty! Please check the config.ini file for less aggressive procesing\n\n");
@@ -856,17 +858,17 @@ Render_Synthetic_Views::merge_views (	std::vector<PointCloudT::Ptr> views_xyz,
 	for (int i = 0; i < views_xyz.size(); i++)
 	{
 		//*
-		Eigen::Matrix3d rotation_matrix = poses[i].block<3,3> (0,0).inverse ();
-		Eigen::Vector3d translation_vector = cam_pos[i];
-		Eigen::Matrix4d transformation;
-		transformation.block<3,3> (0,0) = rotation_matrix;
-		transformation (0,3) = radius_tessellated_sphere_*translation_vector (0);
-		transformation (1,3) = radius_tessellated_sphere_*translation_vector (1);
-		transformation (2,3) = radius_tessellated_sphere_*translation_vector (2);
-		transformation (3,3) = 1.0;
+//		Eigen::Matrix3d rotation_matrix = poses[i].block<3,3> (0,0).inverse ();
+//		Eigen::Vector3d translation_vector = cam_pos[i];
+//		Eigen::Matrix4d transformation;
+//		transformation.block<3,3> (0,0) = rotation_matrix;
+//		transformation (0,3) = radius_tessellated_sphere_*translation_vector (0);
+//		transformation (1,3) = radius_tessellated_sphere_*translation_vector (1);
+//		transformation (2,3) = radius_tessellated_sphere_*translation_vector (2);
+//		transformation (3,3) = 1.0;
 		//*/
 
-		//Eigen::Matrix4d transformation = poses[i].inverse ();
+		Eigen::Matrix4d transformation = poses[i].inverse ();
 		
 		PointCloudT::Ptr rotated_model (new PointCloudT ());
 		pcl::transformPointCloud (*views_xyz[i], *rotated_model, transformation);
@@ -1005,10 +1007,11 @@ Render_Synthetic_Views::graph_viewer (View_Graph graph, PointCloudT::Ptr complet
 {
 	// Add graph to viewer
 	pcl::visualization::PCLVisualizer viewer ("Viewer");
-	graph.add_graph_to_viewer (viewer, 0.02, 0, false);
+	graph.add_graph_to_viewer (viewer, 0.02, 0, true);
 	
 	// Add complete model to viewer
 	viewer.addPointCloud<PointT> (complete_model);
+    viewer.addCoordinateSystem(0.05);
 	std::cout << "Press Q to continue..." << std::endl;
 	viewer.spin ();
 }
