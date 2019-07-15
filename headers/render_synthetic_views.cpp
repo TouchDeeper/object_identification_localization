@@ -1007,11 +1007,13 @@ Render_Synthetic_Views::graph_viewer (View_Graph graph, PointCloudT::Ptr complet
 {
 	// Add graph to viewer
 	pcl::visualization::PCLVisualizer viewer ("Viewer");
+	viewer.setBackgroundColor(255,255,255);
 	graph.add_graph_to_viewer (viewer, 0.02, 0, true);
 	
 	// Add complete model to viewer
-	viewer.addPointCloud<PointT> (complete_model);
-    viewer.addCoordinateSystem(0.05);
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> rgb(complete_model,0,0,0);
+	viewer.addPointCloud<PointT> (complete_model,rgb);
+//    viewer.addCoordinateSystem(0.05);
 	std::cout << "Press Q to continue..." << std::endl;
 	viewer.spin ();
 }

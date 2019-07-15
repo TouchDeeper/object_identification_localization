@@ -259,7 +259,7 @@ View_Graph::add_graph_to_viewer (	pcl::visualization::PCLVisualizer &visu,
 		ssNumber << "number "<< i;
 		pcl::PointXYZ numberOffset(0.02,0.02,0);
 		pcl::PointXYZ numberCenter(numberOffset.x + graph[i].viewpoint_.x,numberOffset.y + graph[i].viewpoint_.y,numberOffset.z + graph[i].viewpoint_.z);
-		visu.addText3D(std::to_string(i),numberCenter,radius,0,255,255,ssNumber.str (),viewport);
+//		visu.addText3D(std::to_string(i),numberCenter,radius,0,255,255,ssNumber.str (),viewport);
 
 		if (show_rotations)
 		{
@@ -270,7 +270,7 @@ View_Graph::add_graph_to_viewer (	pcl::visualization::PCLVisualizer &visu,
 			t (1,3) = graph[i].viewpoint_.y;
 			t (2,3) = graph[i].viewpoint_.z;
 			a.matrix () = t;
-			visu.addCoordinateSystem (0.05, a, ss.str (), viewport);
+//			visu.addCoordinateSystem (0.05, a, ss.str (), viewport);
 		}
 	}
 	
@@ -281,7 +281,8 @@ View_Graph::add_graph_to_viewer (	pcl::visualization::PCLVisualizer &visu,
 		{
 			std::stringstream ss;
 			ss << "Link" << i << j;
-			visu.addLine (graph[i].viewpoint_, graph[graph[i].neighbors_[j]].viewpoint_, 1.0, 1.0, 1.0, ss.str (), viewport);
+//			visu.addLine (graph[i].viewpoint_, graph[graph[i].neighbors_[j]].viewpoint_, 1.0, 1.0, 1.0, ss.str (), viewport);
+			visu.addLine (graph[i].viewpoint_, graph[graph[i].neighbors_[j]].viewpoint_, 0, 0, 0, ss.str (), viewport);
 		}
 	}
 }
@@ -352,7 +353,8 @@ View_Graph::add_node (PointT viewpoint, Eigen::Matrix3d rotation, std::vector<in
 	n.neighbors_ = neighbors;
 	n.view_index = graph.size();
 	n.rgb[0] = 0;
-	n.rgb[1] = 255;
+//	n.rgb[1] = 255;
+	n.rgb[1] = 0;
 	n.rgb[2] = 0;
 
 	graph.push_back (n);
