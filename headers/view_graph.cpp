@@ -649,7 +649,8 @@ View_Graph::find_aligned_view (Eigen::Vector3f cam_axis)
 	}
 	
 	return best_alignment;
-}	
+}
+
 		
 		
 		

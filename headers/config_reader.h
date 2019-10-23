@@ -43,6 +43,7 @@ class Config_Reader
 		bool view_graph;
 		bool avg_glb_feature;
 		bool use_delay;
+		int fusion_level;
 
 		// System
 		std::string save_path;

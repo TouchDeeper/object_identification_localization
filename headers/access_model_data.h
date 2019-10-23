@@ -70,6 +70,14 @@ class Access_Model_Data
 							std::vector<PointCloud_N::Ptr> views_N,
 							std::vector<PointCloud_N::Ptr> views_original_pose,
 							PointCloudT::Ptr complete_model );
+        /**
+        Saves the fusion view-clouds
+        @param model_name The model name
+        @param fuse_results Vector containing the multi-level fusion view
+        */
+        void
+        save_fusion_view_clouds (	std::string model_name,
+                                                        std::vector<std::vector<pcl::PointCloud<pcl::PointNormal>::Ptr>> &fuse_results);
 
 		/**
 		  Saves the view-utilities for each view. The utility is a measure of the visibility of the object in each view.
@@ -201,6 +209,14 @@ class Access_Model_Data
 		*/
 		void 
 		save_local_features (std::string model_name, std::vector<FeatureCloudL::Ptr> features);
+
+        /**
+        Saves the fusion local features for all views
+        @param model_name The model name
+        @param features The local feature clouds
+        */
+        void
+        save_fusion_local_features (std::string model_name, std::vector<std::vector<FeatureCloudL::Ptr>> features);
 		
 		/**
 		  Adds the local features for the view-clouds in /views_original_pose 

@@ -45,6 +45,8 @@ int main (int argc, char** argv)
 	render.set_view_graph (cr.view_graph);
 	render.set_use_average_global_feature (cr.avg_glb_feature); 
 	render.set_use_delay(cr.use_delay);
+	render.set_fusion_level(cr.fusion_level);
+
 	
 	if (cr.use_k_search && cr.use_radius_search)
 	{
@@ -70,7 +72,7 @@ int main (int argc, char** argv)
 	{
 		render.set_radius_search_normals (cr.radius_search_normals);
 	}
-	
+
 	// Render synthetic views
 	render.start_rendering (argc, argv);
 }

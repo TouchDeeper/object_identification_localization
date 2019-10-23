@@ -251,6 +251,65 @@ Access_Model_Data::save_view_clouds (	std::string model_name,
 		pcl::io::savePCDFileASCII (p_view.string(), *views_original_pose[i]);
 	}
 }
+/**
+  Saves the fusion view-clouds
+  @param model_name The model name
+  @param views_N Vector containing the view clouds
+  @param views_original_pose Vector containing the view clouds in original CAD-pose
+  @param complete_model Complete model obtained by merging all the views in original pose
+*/
+void
+Access_Model_Data::save_fusion_view_clouds (	std::string model_name,
+                                                std::vector<std::vector<pcl::PointCloud<pcl::PointNormal>::Ptr>> &fuse_results)
+{
+    // Add path to model
+    boost::filesystem::path p = path_to_model_in_model_data (model_name);
+
+
+
+    // Add path to directory named "fusion_views"
+    boost::filesystem::path p_fusion_views = p;
+    p_fusion_views /= "fusion_views";
+
+    // Check if such path exists
+    if (!boost::filesystem::exists(p_fusion_views))
+    {
+        // Path does not exist, create directory for "fusion_views"
+        if (!boost::filesystem::create_directory(p_fusion_views))
+        {
+            std::stringstream ss;
+            ss << "ERROR: Could not create directory fusion_views for " << model_name << " in model_data!\n\n";
+            pcl::console::print_error(ss.str().c_str());
+            std::exit (EXIT_FAILURE);
+        }
+    }
+
+    for (int i = 0; i < fuse_results.size(); i++)
+    {
+        boost::filesystem::path p_fusion_view_n = p_fusion_views;
+        std::string viewi = "view" + std::to_string(i);
+        p_fusion_view_n /= viewi;
+        // Check if such path exists
+        if (!boost::filesystem::exists(p_fusion_view_n))
+        {
+            // Path does not exist, create directory for "fusion_views"
+            if (!boost::filesystem::create_directory(p_fusion_view_n))
+            {
+                std::stringstream ss;
+                ss << "ERROR: Could not create directory viewi for " << model_name << " in model_data!\n\n";
+                pcl::console::print_error(ss.str().c_str());
+                std::exit (EXIT_FAILURE);
+            }
+        }
+        for (int j = 0; j < fuse_results[i].size(); ++j) {
+            std::stringstream ss;
+            ss << "level" << j+1 << ".pcd";
+            boost::filesystem::path p_view_level = p_fusion_view_n;
+            p_view_level /= ss.str ();
+            pcl::io::savePCDFileASCII (p_view_level.string(), *fuse_results[i][j]);
+        }
+    }
+}
 
 /**
   Saves the view-utilities for each view. The utility is a measure of the visibility of the object in each view.   
@@ -891,7 +950,59 @@ Access_Model_Data::save_local_features (std::string model_name, std::vector<Feat
 		pcl::io::savePCDFileBinaryCompressed (ss.str (), *features[i]);
 	}
 }
+/**
+  Saves the fusion local features for all views
+  @param model_name The model name
+  @param features The local feature clouds
+*/
+void
+Access_Model_Data::save_fusion_local_features (std::string model_name, std::vector<std::vector<FeatureCloudL::Ptr>> features)
+{
+    // Add path to model
+    boost::filesystem::path p = path_to_model_in_model_data (model_name);
 
+    // Add path to directory named "fusion_local_features"
+    boost::filesystem::path p_lf = p;
+    p_lf /= "fusion_local_features";
+
+    // Check if such path exists
+    if (!boost::filesystem::exists(p_lf))
+    {
+        // Path does not exist, create directory for "fusion_local_features"
+        if (!boost::filesystem::create_directory(p_lf))
+        {
+            std::stringstream ss;
+            ss << "ERROR: Could not create directory local features for " << model_name << " in model_data!\n\n";
+            pcl::console::print_error(ss.str().c_str());
+            std::exit (EXIT_FAILURE);
+        }
+    }
+
+    std::stringstream ss;
+    for (int i = 0; i < features.size(); i++)
+    {
+        std::string feature_directory = "view" + std::to_string(i);
+        p_lf /= feature_directory;
+        // Check if such path exists
+        if (!boost::filesystem::exists(p_lf))
+        {
+            // Path does not exist, create directory for "fusion_local_features"
+            if (!boost::filesystem::create_directory(p_lf))
+            {
+                std::stringstream ss;
+                ss << "ERROR: Could not create directory local features for " << model_name << " in fusion_local_features!\n\n";
+                pcl::console::print_error(ss.str().c_str());
+                std::exit (EXIT_FAILURE);
+            }
+        }
+        ss.str ("");
+        for (int j = 0; j < features[i].size(); ++j) {
+            ss << p_lf.string () << "/level" << j+1 << ".pcd";
+            pcl::io::savePCDFileBinaryCompressed (ss.str (), *(features[i][j]));
+        }
+
+    }
+}
 /**
   Adds the local features for the view-clouds in /views_original_pose 
   @param model_name The model name

@@ -225,6 +225,7 @@ class View_Graph
 		*/
 		int
 		find_aligned_view (Eigen::Vector3f cam_axis);
+
 };
 
 #endif
